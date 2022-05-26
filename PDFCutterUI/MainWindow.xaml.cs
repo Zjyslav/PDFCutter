@@ -50,11 +50,44 @@ namespace PDFCutterUI
             }
         }
 
+        private List<string> OutputFileNames;
+
+        public List<string> _outputFileNames
+        {
+            get { return OutputFileNames; }
+            set { OutputFileNames = value; OnPropertyChanged(nameof(OutputFileNames)); }
+        }
+
+
+
+        public string CurrentOutputFileName
+        {
+            get
+            {
+                if (OutputFileNames is not null)
+                    return OutputFileNames[pdfViewer.CurrentPageIndex - 1];
+                else
+                    return string.Empty;
+            }
+            set
+            {
+                if (OutputFileNames is not null)
+                    OutputFileNames[pdfViewer.CurrentPageIndex - 1] = value;
+            }
+        }
+
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+
+            OutputFileNames = new();
+
+            //Ustawienia okienka podglądu
+            pdfViewer.ShowScrollbar = false;
+            pdfViewer.ZoomMode = ZoomMode.FitPage;
+            pdfViewer.IsEnabled = false;
         }
 
         private void WybierzPlikBtn_Click(object sender, RoutedEventArgs e)
@@ -65,13 +98,30 @@ namespace PDFCutterUI
             wybierzPlikDialog.ShowDialog();
             WybranyPlik = wybierzPlikDialog.FileName;
             pdfViewer.Load(WybranyPlik);
-            pdfViewer.ShowScrollbar = false;
-            pdfViewer.ZoomMode = ZoomMode.FitPage;            
+            OutputFileNames = new();
+            for (int i = 0; i < pdfViewer.PageCount; i++)
+            {
+                OutputFileNames.Add(string.Empty);
+            }
+            OnPropertyChanged(nameof(CurrentOutputFileName));
         }
 
         private void pdfViewer_CurrentPageChanged(object sender, EventArgs args)
         {
             PageNumber.Text = pdfViewer.CurrentPageIndex.ToString();
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta < 0)
+            {
+                pdfViewer.GoToNextPage();
+            }
+            else
+            {
+                pdfViewer.GoToPreviousPage();
+            }
+            OnPropertyChanged(nameof(CurrentOutputFileName));
         }
     }
 }

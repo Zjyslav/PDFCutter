@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PDFCutterUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
+        Title="MainWindow" Height="450" Width="800" WindowState="Maximized" MouseWheel="Window_MouseWheel">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -31,5 +31,7 @@
         <PdfViewer:PdfDocumentView x:Name="pdfViewer" Grid.Row="2" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="2" CurrentPageChanged="pdfViewer_CurrentPageChanged"/>
 
         <TextBlock x:Name="PageNumber" Grid.Row="1" Grid.Column="2" />
+
+        <TextBox x:Name="OutputFileNameTB" Text="{Binding Path=CurrentOutputFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Grid.Row="1"/>
     </Grid>
 </Window>
