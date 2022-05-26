@@ -13,5 +13,10 @@ namespace PDFCutterUI
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            //Register Syncfusion license
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(System.Configuration.ConfigurationManager.AppSettings["SyncfusionLicense"]);
+        }
     }
 }
