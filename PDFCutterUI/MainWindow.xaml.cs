@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Syncfusion.Windows.PdfViewer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -63,6 +64,14 @@ namespace PDFCutterUI
             wybierzPlikDialog.RestoreDirectory = true;
             wybierzPlikDialog.ShowDialog();
             WybranyPlik = wybierzPlikDialog.FileName;
+            pdfViewer.Load(WybranyPlik);
+            pdfViewer.ShowScrollbar = false;
+            pdfViewer.ZoomMode = ZoomMode.FitPage;            
+        }
+
+        private void pdfViewer_CurrentPageChanged(object sender, EventArgs args)
+        {
+            PageNumber.Text = pdfViewer.CurrentPageIndex.ToString();
         }
     }
 }
