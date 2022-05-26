@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +19,50 @@ namespace PDFCutterUI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        //Implementacja INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        Microsoft.Win32.OpenFileDialog wybierzPlikDialog = new Microsoft.Win32.OpenFileDialog();
+        private string _wybranyPlik = string.Empty;
+
+        public string WybranyPlik
+        {
+            get
+            {
+                if (_wybranyPlik == string.Empty)
+                    return "Nie wybrano pliku.";
+                else
+                    return _wybranyPlik;
+            }
+            set
+            {
+                _wybranyPlik = value;
+                OnPropertyChanged(nameof(WybranyPlik));
+            }
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+        }
+
+        private void WybierzPlikBtn_Click(object sender, RoutedEventArgs e)
+        {
+            WybranyPlik = String.Empty;
+            wybierzPlikDialog.Filter = "Plik PDF|*.pdf";
+            wybierzPlikDialog.RestoreDirectory = true;
+            wybierzPlikDialog.ShowDialog();
+            WybranyPlik = wybierzPlikDialog.FileName;
         }
     }
 }
