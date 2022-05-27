@@ -64,14 +64,14 @@ namespace PDFCutterUI
         {
             get
             {
-                if (OutputFileNames is not null)
+                if (OutputFileNames is not null && OutputFileNames.Count > 0 && pdfViewer.CurrentPageIndex > 0)
                     return OutputFileNames[pdfViewer.CurrentPageIndex - 1];
                 else
                     return string.Empty;
             }
             set
             {
-                if (OutputFileNames is not null)
+                if (OutputFileNames is not null && OutputFileNames.Count > 0 && pdfViewer.CurrentPageIndex > 0)
                     OutputFileNames[pdfViewer.CurrentPageIndex - 1] = value;
             }
         }
