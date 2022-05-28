@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PDFCutterUI"
         mc:Ignorable="d"
-        Title="PDF Cutter" Height="450" Width="800" WindowState="Maximized" MouseWheel="Window_MouseWheel" KeyDown="Window_KeyDown" FontSize="18">
+        Title="PDF Cutter" Height="800" Width="1000" WindowState="Maximized" MouseWheel="Window_MouseWheel" KeyDown="Window_KeyDown" FontSize="20">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -36,7 +36,7 @@
 
         
 
-        <TextBlock x:Name="PageNumber" Grid.Row="1" Grid.Column="3" TextAlignment="Center" />
+        <TextBlock x:Name="PageNumber" Grid.Row="1" Grid.Column="3" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <TextBox x:Name="OutputFileNameTB" Text="{Binding Path=CurrentOutputFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Column="4" Grid.Row="1" KeyDown="OutputFileNameTB_KeyDown"/>
 
@@ -45,7 +45,7 @@
         <Button x:Name="SubmitBtn" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Click="SubmitBtn_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid>
                 <ProgressBar x:Name="SubmitBtnProgress" Value="{Binding Path=Progress}"/>
-                <TextBlock x:Name="SubmitBtnText" HorizontalAlignment="Center" VerticalAlignment="Center" Text="sdfsdf"/>
+                <TextBlock x:Name="SubmitBtnText" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Podziel!" FontWeight="Bold"/>
             </Grid>
         </Button>
     </Grid>
