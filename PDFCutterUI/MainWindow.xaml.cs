@@ -31,7 +31,6 @@ namespace PDFCutterUI
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        Microsoft.Win32.OpenFileDialog wybierzPlikDialog = new Microsoft.Win32.OpenFileDialog();
         private string _wybranyPlik = string.Empty;
 
         public string WybranyPlik
@@ -39,7 +38,7 @@ namespace PDFCutterUI
             get
             {
                 if (_wybranyPlik == string.Empty)
-                    return "Nie wybrano pliku.";
+                    return "Wybierz plik PDF...";
                 else
                     return _wybranyPlik;
             }
@@ -49,6 +48,7 @@ namespace PDFCutterUI
                 OnPropertyChanged(nameof(WybranyPlik));
             }
         }
+
 
         private List<string> OutputFileNames;
 
@@ -92,36 +92,96 @@ namespace PDFCutterUI
 
         private void WybierzPlikBtn_Click(object sender, RoutedEventArgs e)
         {
-            WybranyPlik = String.Empty;
+            Microsoft.Win32.OpenFileDialog wybierzPlikDialog = new();
             wybierzPlikDialog.Filter = "Plik PDF|*.pdf";
             wybierzPlikDialog.RestoreDirectory = true;
-            wybierzPlikDialog.ShowDialog();
-            WybranyPlik = wybierzPlikDialog.FileName;
-            pdfViewer.Load(WybranyPlik);
-            OutputFileNames = new();
-            for (int i = 0; i < pdfViewer.PageCount; i++)
+            if (wybierzPlikDialog.ShowDialog() == true)
             {
-                OutputFileNames.Add(string.Empty);
+                WybranyPlik = String.Empty;
+                WybranyPlik = wybierzPlikDialog.FileName;
+                pdfViewer.Load(WybranyPlik);
+                OutputFileNames = new();
+                for (int i = 0; i < pdfViewer.PageCount; i++)
+                {
+                    OutputFileNames.Add(string.Empty);
+                }
             }
             OnPropertyChanged(nameof(CurrentOutputFileName));
         }
 
         private void pdfViewer_CurrentPageChanged(object sender, EventArgs args)
         {
-            PageNumber.Text = pdfViewer.CurrentPageIndex.ToString();
+            PageNumber.Text = string.Format("Strona {0} z {1}", pdfViewer.CurrentPageIndex, pdfViewer.PageCount);
         }
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.Delta < 0)
             {
-                pdfViewer.GoToNextPage();
+                if (pdfViewer.CurrentPageIndex < pdfViewer.PageCount)
+                    pdfViewer.GoToNextPage();
             }
             else
             {
                 pdfViewer.GoToPreviousPage();
             }
             OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Home)
+                pdfViewer.GoToFirstPage();
+
+            if (e.Key == Key.End)
+                pdfViewer.GoToLastPage();
+
+            if (e.Key == Key.PageDown)
+                pdfViewer.GoToNextPage();
+
+            if (e.Key == Key.PageUp)
+                pdfViewer.GoToPreviousPage();
+
+            OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void OutputFileNameTB_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                LastBtn.Focus();
+            }
+            
+        }
+
+        private void FirstBtn_Click(object sender, RoutedEventArgs e)
+        {
+            pdfViewer.GoToFirstPage();
+            OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void PreviousBtn_Click(object sender, RoutedEventArgs e)
+        {
+            pdfViewer.GoToPreviousPage();
+            OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void NextBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (pdfViewer.CurrentPageIndex < pdfViewer.PageCount)
+                pdfViewer.GoToNextPage();
+            OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void LastBtn_Click(object sender, RoutedEventArgs e)
+        {
+            pdfViewer.GoToLastPage();
+            OnPropertyChanged(nameof(CurrentOutputFileName));
+        }
+
+        private void SubmitBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
