@@ -1,4 +1,5 @@
-﻿using Syncfusion.Windows.PdfViewer;
+﻿using Syncfusion.Pdf;
+using Syncfusion.Windows.PdfViewer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,6 +78,15 @@ namespace PDFCutterUI
         }
 
 
+        private int _progress;
+
+        public int Progress
+        {
+            get { return _progress; }
+            set { _progress = value; OnPropertyChanged(nameof(Progress)); }
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -88,6 +98,7 @@ namespace PDFCutterUI
             pdfViewer.ShowScrollbar = false;
             pdfViewer.ZoomMode = ZoomMode.FitPage;
             pdfViewer.IsEnabled = false;
+            Progress = 0;
         }
 
         private void WybierzPlikBtn_Click(object sender, RoutedEventArgs e)
@@ -179,9 +190,66 @@ namespace PDFCutterUI
             OnPropertyChanged(nameof(CurrentOutputFileName));
         }
 
-        private void SubmitBtn_Click(object sender, RoutedEventArgs e)
+        private async void SubmitBtn_Click(object sender, RoutedEventArgs e)
         {
+            Progress = 0;
+            string? path = System.IO.Path.GetDirectoryName(WybranyPlik);
 
+            decimal total = OutputFileNames.Where(x => string.IsNullOrWhiteSpace(x) == false).Count();
+            decimal completed = 0;
+            PdfDocument currentPdfDocument = new();
+            string currentOutputFileName = string.Empty;
+            bool fileInProgress = false;
+            if (total > 0)
+            {
+                await Task.Run(() =>
+                {
+                    for (int i = 0; i < (OutputFileNames.Count); i++)
+                    {                        
+                        if (string.IsNullOrWhiteSpace(OutputFileNames[i]) == false)
+                        {
+                            if (fileInProgress)
+                            {
+                                try
+                                {
+                                    currentPdfDocument.Save(path + @"\cut\" + currentOutputFileName + ".pdf");
+                                    fileInProgress = false;
+                                    completed++;
+                                    Progress = (int)(completed * 100 / total);
+                                }
+                                catch (Exception e)
+                                {
+                                    MessageBox.Show(e.Message);
+                                }
+                            }
+                            currentOutputFileName = OutputFileNames[i];
+                            currentPdfDocument = new();
+                            fileInProgress = true;
+                            currentPdfDocument.ImportPage(pdfViewer.LoadedDocument, i);
+                        }
+                        else if (fileInProgress)
+                        {
+                            currentPdfDocument.ImportPage(pdfViewer.LoadedDocument, i);
+                        }
+                        
+                        if (fileInProgress && i == OutputFileNames.Count - 1)
+                        {
+                            try
+                            {
+                                currentPdfDocument.Save(path + @"\cut\" + currentOutputFileName + ".pdf");
+                                fileInProgress = false;
+                                completed++;
+                                Progress = (int)(completed * 100 / total);
+                            }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show(e.Message);
+                            }
+                        }
+                    }
+                }
+                );
+            }
         }
     }
 }

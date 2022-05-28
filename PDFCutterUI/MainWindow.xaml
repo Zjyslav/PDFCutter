@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PDFCutterUI"
         mc:Ignorable="d"
-        Title="PDF Cutter" Height="450" Width="800" WindowState="Maximized" MouseWheel="Window_MouseWheel" KeyDown="Window_KeyDown">
+        Title="PDF Cutter" Height="450" Width="800" WindowState="Maximized" MouseWheel="Window_MouseWheel" KeyDown="Window_KeyDown" FontSize="18">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -26,7 +26,7 @@
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="WybierzPlikBtn" Grid.Row="1" Grid.Column="1" Click="WybierzPlikBtn_Click">
+        <Button x:Name="WybierzPlikBtn" Grid.Row="1" Grid.Column="1" Click="WybierzPlikBtn_Click" Grid.ColumnSpan="2">
             <TextBlock Text="{Binding Path=WybranyPlik}"/>
         </Button>
         <Button x:Name="FirstBtn" Grid.Row="2" Grid.Column="1" FontFamily="Segoe UI Symbol" Content="&#xE100;" FontSize="20" Click="FirstBtn_Click"></Button>
@@ -36,16 +36,16 @@
 
         
 
-        <TextBlock x:Name="PageNumber" Grid.Row="1" Grid.Column="2" />
+        <TextBlock x:Name="PageNumber" Grid.Row="1" Grid.Column="3" TextAlignment="Center" />
 
         <TextBox x:Name="OutputFileNameTB" Text="{Binding Path=CurrentOutputFileName, UpdateSourceTrigger=PropertyChanged}" Grid.Column="4" Grid.Row="1" KeyDown="OutputFileNameTB_KeyDown"/>
 
         <PdfViewer:PdfDocumentView x:Name="pdfViewer" Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="4" CurrentPageChanged="pdfViewer_CurrentPageChanged"/>
 
-        <Button x:Name="SubmitBtn" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Click="SubmitBtn_Click">
+        <Button x:Name="SubmitBtn" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Click="SubmitBtn_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid>
-                <ProgressBar x:Name="SubmitBtnProgress"/>
-                <TextBlock x:Name="SubmitBtnText"/>
+                <ProgressBar x:Name="SubmitBtnProgress" Value="{Binding Path=Progress}"/>
+                <TextBlock x:Name="SubmitBtnText" HorizontalAlignment="Center" VerticalAlignment="Center" Text="sdfsdf"/>
             </Grid>
         </Button>
     </Grid>
